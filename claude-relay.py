@@ -300,6 +300,22 @@ def _format_for_terminal(text: str) -> str:
     for pattern, replacement in _MD_PATTERNS:
         text = pattern.sub(replacement, text)
 
+    # Replace common unicode with ASCII equivalents
+    text = text.replace("\u2014", "--")     # em dash
+    text = text.replace("\u2013", "-")      # en dash
+    text = text.replace("\u2018", "'")      # left single quote
+    text = text.replace("\u2019", "'")      # right single quote
+    text = text.replace("\u201c", '"')      # left double quote
+    text = text.replace("\u201d", '"')      # right double quote
+    text = text.replace("\u2026", "...")     # ellipsis
+    text = text.replace("\u00a0", " ")      # non-breaking space
+    text = text.replace("\u200a", " ")      # hair space
+    text = text.replace("\u00b7", "-")      # middle dot
+    text = text.replace("\u2022", "-")      # bullet
+
+    # Strip any remaining non-ASCII — Mac Plus is ASCII only
+    text = "".join(c if ord(c) < 128 else "" for c in text)
+
     # Collapse triple+ newlines
     text = re.sub(r"\n{3,}", "\n\n", text)
 
